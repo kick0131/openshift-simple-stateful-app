@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: simple-stateful-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: openshift-gitops
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: apps
+    repoURL: >-
+      https://gitlab.com/<your-gitlab-username>/simple-stateful-app.git
+    #自身のGitlabリポジトリ名に変更します
+    targetRevision: main
+  project: simple-stateful-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

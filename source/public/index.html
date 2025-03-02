@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js MySQL App</title>
+    <style>
+        .title {
+          color: rgb(255, 0, 0);
+        }
+    </style>
+    
+</head>
+<body>
+    <h1><span class="title">Text Storage App </span></h1>
+    <h2> Host Name</h2>
+    <p><b><span id="hostname"></span></b><p>
+    <h2>Enter Text</h2>
+    <form id="addForm">
+        <input type="text" id="content" name="content" required>
+        <button type="submit">Add Text</button>
+    </form>
+
+    <h2>Search Text</h2>
+    <form id="searchForm">
+        <input type="text" name="q" id="searchQuery" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Search Results:</h2>
+    <ul id="results"></ul>
+
+    <script>
+        // ホスト名を取得して表示
+        fetch('/hostname')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('hostname').textContent = data.hostname;
+            });
+
+        // テキストの追加時に入力欄を空にする
+        document.getElementById('addForm').onsubmit = function(event) {
+            event.preventDefault();
+            const contentInput = document.getElementById('content');
+            const content = contentInput.value;
+
+            fetch('/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'content=' + encodeURIComponent(content)
+            }).then(response => {
+                if (response.ok) {
+                    contentInput.value = '';
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        // 検索機能の処理
+        const searchForm = document.getElementById('searchForm');
+        searchForm.onsubmit = async (event) => {
+            event.preventDefault();
+            const query = document.getElementById('searchQuery').value;
+            const response = await fetch(`/search?q=${query}`);
+            const results = await response.json();
+            const resultsList = document.getElementById('results');
+            resultsList.innerHTML = '';
+            results.forEach(result => {
+                const li = document.createElement('li');
+                li.textContent = result.content;
+                resultsList.appendChild(li);
+            });
+        };
+    </script>
+</body>
+</html>
