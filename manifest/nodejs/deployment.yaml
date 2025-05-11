@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: node-app
-        image: kick0131/openshift-sample-app:0.0.1
+        image: kick0131/openshift-sample-app:0.0.2
         #ここを自分のコンテナレジストリのURLに変更します
         ports:
         - containerPort: 3000
