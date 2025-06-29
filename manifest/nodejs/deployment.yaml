@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: node-app-deployment
 spec:
+  revisionHistoryLimit: 3  # 保持する履歴数を3つに制限
   replicas: 3
   selector:
     matchLabels:
